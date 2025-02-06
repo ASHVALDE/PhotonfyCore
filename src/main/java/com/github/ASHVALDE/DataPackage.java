@@ -156,12 +156,11 @@ public class DataPackage {
                 case GET_DEFAULT_BACKGROUND_COEFFICIENTS:
                 case GET_BACKGROUND_COEFFICIENTS:
                     String responseBGCoef = "";
-                    Stack<Float> UnpackedData = new Stack<Float>();
                     for (int i = 0; i < payload.size(); i=i+4) {
                         byte[] BackGroundCoef = {payload.get(i),payload.get(i+1),payload.get(i+2),payload.get(i+3)};
-                        responseBGCoef =  responseBGCoef + ByteBuffer.wrap(BackGroundCoef).getFloat()+"\n";
+                        responseBGCoef =  responseBGCoef + ByteBuffer.wrap(BackGroundCoef).getFloat()+" ,";
                     }
-                    return UnpackedData.toString();
+                    return responseBGCoef;
                 case GET_FLICKERING:
                     String Flickering = "";
                     for (int i = 0; i < payload.size(); i=i+4) {

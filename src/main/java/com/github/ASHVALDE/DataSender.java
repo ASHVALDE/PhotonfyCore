@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.graalvm.compiler.debug.DebugOptions.Log;
+
 public class DataSender {
     private final OutputStream outputStream;
 
