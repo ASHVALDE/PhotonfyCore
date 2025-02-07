@@ -49,6 +49,7 @@ public class Photonfy extends Thread {
                 try {
                     DataPackage receivedDataPackage = new DataPackage().fromBytes(dataCopy);
                     if (receivedDataPackage.flags == 1 && receivedDataPackage.sequence == 0) {
+
                         /* Aqui inicia el multitrama si hay */
                         multiTramaBuffer = receivedDataPackage;
                         return;
@@ -56,6 +57,7 @@ public class Photonfy extends Thread {
                     if (receivedDataPackage.flags == 1) {
                         /* Aqui continua el multitrama si hay */
                         multiTramaBuffer.payload.addAll(receivedDataPackage.payload);
+
                         return;
                     }
                     if(receivedDataPackage.flags == 0 && receivedDataPackage.sequence != 0) {
@@ -65,6 +67,7 @@ public class Photonfy extends Thread {
                             multiTramaBuffer.token = 0x05; // Update de calidad, Basicamente todos los TOKEN corresponden con sus codigos de comando
                         }
                         notifyListeners(multiTramaBuffer);
+
                         return;
                     }
                     if (receivedDataPackage.flags == 0) {
