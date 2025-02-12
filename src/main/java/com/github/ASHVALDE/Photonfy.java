@@ -19,7 +19,7 @@ public class Photonfy extends Thread {
         listeners.add(listener);
     }
 
-    public void removeListener(DataReceiver.DataListener listener) {
+    public void removeListener(DataListener listener) {
         listeners.remove(listener);
     }
 

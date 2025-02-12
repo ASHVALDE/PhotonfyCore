@@ -10,21 +10,21 @@ class DataReceiver implements Runnable {
     private static final int BUFFER_SIZE = 1024;
     private final InputStream input;
     // Removed the unused class member 'buffer' to avoid confusion.
-    private final CopyOnWriteArrayList<DataListener> listeners = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<ReceiverListener> listeners = new CopyOnWriteArrayList<>();
 
     public DataReceiver(InputStream input) {
         this.input = input;
     }
 
-    public interface DataListener {
+    public interface ReceiverListener {
         void onData(Stack<Byte> data) throws IOException;
     }
 
-    public void addListener(DataListener listener) {
+    public void addListener(ReceiverListener listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(DataListener listener) {
+    public void removeListener(ReceiverListener listener) {
         listeners.remove(listener);
     }
 
@@ -116,7 +116,7 @@ class DataReceiver implements Runnable {
             dataStack.push(b);
         }
 
-        for (DataListener listener : listeners) {
+        for (ReceiverListener listener : listeners) {
             listener.onData(dataStack);
         }
     }

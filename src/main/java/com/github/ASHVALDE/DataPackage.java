@@ -55,8 +55,10 @@ public class DataPackage {
     private static int byteToUnsigned(Byte b) {
         return b & 0xFF;
     }
-
-    public String getResponse() {
+    public String getResponse(){
+        return getResponse(false);
+    }
+    public String getResponse(boolean SimpleResponse) {
         PhotonfyCodes function = PhotonfyCodes.fromInt(this.token);
 
         if(this.token==5 ){
@@ -110,33 +112,49 @@ public class DataPackage {
                     return "Bateria: "+Bateria+"\nTemperatura:"+ temperature+" °C";
                 case GET_GAIN:
                     int GAIN = payload.get(0)& 0xFF;
+                    if(SimpleResponse){
+                        return String.valueOf(GAIN);
+                    }
                     if(GAIN==1){
                         return "Gain Enabled";
                     }else{
                         return "Gain Disabled";
                     }
+
                 case GET_INTEGRATION_TIME:
                     byte[] integrationTime = {payload.get(0),payload.get(1)};
                     float Integration =  ByteBuffer.wrap(integrationTime).getShort();
-                    return "Integration time: "+Integration+" ms";
+                    if(SimpleResponse){
+                        return String.valueOf(Integration);
+
+                    }else{
+                        return "Integration time: "+Integration+" ms";
+                    }
                 case GET_DEFAULT_LUX_CALIBRATION:
                 case GET_LUX_CALIBRATION:
                     byte[] x = {payload.get(0),payload.get(1),payload.get(2),payload.get(3)};
                     float Lux =  ByteBuffer.wrap(x).getFloat();
+                    if(SimpleResponse){
+                        return String.valueOf(Lux);
+                    }
                     return "Lux: "+Lux;
                 case GET_VIDEO_SAMPLE_RATE:
                     float SampleRate= ByteBuffer.wrap(new byte[]{payload.get(0), payload.get(1), payload.get(2), payload.get(3)}).getFloat();
+                    if(SimpleResponse){
+                        return String.valueOf(SampleRate);
+                    }
                     return "SampleRate: "+SampleRate;
                 case GET_DEFAULT_WAVELENGTH_CALIBRATION:
                 case GET_WAVELENGTH_CALIBRATION:
                     String WavelenghtCalibration ="";
                     for (int i = 0; i < payload.size(); i=i+4) {
                         byte[] WaveLenghtCoef = {payload.get(i),payload.get(i+1),payload.get(i+2),payload.get(i+3)};
-                        WavelenghtCalibration = WavelenghtCalibration + ByteBuffer.wrap(WaveLenghtCoef).getFloat()+"\n";
+                        WavelenghtCalibration = WavelenghtCalibration + ByteBuffer.wrap(WaveLenghtCoef).getFloat()+",";
                     }
                     return WavelenghtCalibration;
                 case GET_DEFAULT_BACKGROUND_CALIBRATIONS:
                 case GET_BACKGROUND_CALIBRATIONS:
+
                     String response = "";
                     short data =  ByteBuffer.wrap(new byte[]{payload.get(0), payload.get(1)}).getShort();
                     response = response+"data: "+data+"\n";
@@ -144,7 +162,11 @@ public class DataPackage {
                     response = response+"integrationTime: "+integrationTimeBG+"\n";
                     float Temperature =  ByteBuffer.wrap(new byte[]{payload.get(4), payload.get(5), payload.get(6), payload.get(7)}).getFloat();
                     response = response+"Temperature: "+Temperature+"\n";
+                    if(SimpleResponse){
+                        return data+","+integrationTimeBG+","+Temperature;
+                    }
                     return response;
+
                 case GET_TIME:
                     int Hora = payload.get(0)& 0xFF;
                     int Minuto = payload.get(1)& 0xFF;
@@ -152,6 +174,9 @@ public class DataPackage {
                     int Dia = payload.get(3)& 0xFF;
                     int Mes = payload.get(4)& 0xFF;
                     int Anyo = payload.get(5)& 0xFF;
+                    if(SimpleResponse){
+                        return Hora+","+Minuto+","+Segundo+","+Dia+","+Mes+","+Anyo;
+                    }
                     return Hora+":"+Minuto+":"+Segundo+"|| Fecha -> Dia:"+Dia+" Mes:"+Mes+" Año:"+Anyo;
                 case GET_DEFAULT_BACKGROUND_COEFFICIENTS:
                 case GET_BACKGROUND_COEFFICIENTS:
@@ -169,6 +194,7 @@ public class DataPackage {
                     }
                     return Flickering;
                 case GET_DEVICE_INFO:
+                    System.out.println(payload.get(0));
                     return "This Function has not been Implemented yet";
                 default:
                     return this.name.toString();
